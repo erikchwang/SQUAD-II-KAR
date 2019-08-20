@@ -17,7 +17,7 @@ dropout_rate = 0.2
 vector_size = 4096
 position_limit = 510
 wordnet_relation_hop_count = 3
-answer_class_loss_weight = 1.0
+answer_class_loss_weights = [1.5, 0.75]
 gradient_clipping_global_norm = 3.0
 answer_span_length_limit = 16
 exponential_moving_average_decay = 0.999
@@ -622,7 +622,7 @@ def build_update(
                             tf.losses.sparse_softmax_cross_entropy(
                                 labels=ANSWER_CLASS_BATCH[index],
                                 logits=ANSWER_CLASS_DISTRIBUTION,
-                                weights=answer_class_loss_weight
+                                weights=tf.gather(params=answer_class_loss_weights, indices=ANSWER_CLASS_BATCH[index])
                             )
                         ],
                         xs=tf.trainable_variables()
